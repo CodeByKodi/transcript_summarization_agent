@@ -20,7 +20,7 @@ load_dotenv()
 vertexai.init(
     project=os.getenv("GOOGLE_CLOUD_PROJECT"),
     location=os.getenv("GOOGLE_CLOUD_LOCATION"),
-    staging_bucket="gs://" + os.getenv("GOOGLE_CLOUD_PROJECT") + "-bucket",
+    staging_bucket="gs://geni-project_cloudbuild",
 )
 
 remote_app = agent_engines.create(

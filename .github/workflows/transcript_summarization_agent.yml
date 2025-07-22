@@ -54,7 +54,7 @@ jobs:
         echo "GOOGLE_GENAI_USE_VERTEXAI=TRUE" >> .env
         echo "MODEL=gemini-2.0-flash-exp" >> .env
         echo "APP_NAME=Transcript Summarizer" >> .env
-        echo "STAGING_BUCKET=gs://geni-project_cloudbuild" >> .env
+        # echo "STAGING_BUCKET=gs://geni-project_cloudbuild" >> .env
 
     - name: Deploy Agent
       if: ${{ github.event.inputs.action == 'deploy' }}

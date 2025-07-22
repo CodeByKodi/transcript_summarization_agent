@@ -10,7 +10,7 @@ load_dotenv()
 project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
 location = os.getenv("GOOGLE_CLOUD_LOCATION")
 app_name = os.getenv("APP_NAME", "Transcript Summarizer")
-bucket_name = f"gs://{project_id}-bucket"
+bucket_name = f"gs://geni-project_cloudbuild"
 
 cloud_logging_client = google.cloud.logging.Client(project=project_id)
 handler = CloudLoggingHandler(cloud_logging_client, name="transcript-summarizer")
