@@ -55,9 +55,6 @@ jobs:
         echo "MODEL=${{ env.MODEL }}" >> .env
         echo "APP_NAME=\"${{ env.APP_NAME }}\"" >> .env
 
-    - name: Change to Agent Directory
-      run: cd transcript_summarization_agent
-      shell: bash
 
     - name: Deploy Agent
       if: ${{ github.event.inputs.action == 'deploy' }}
