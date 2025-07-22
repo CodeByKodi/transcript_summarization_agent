@@ -55,17 +55,21 @@ jobs:
         echo "MODEL=${{ env.MODEL }}" >> .env
         echo "APP_NAME=\"${{ env.APP_NAME }}\"" >> .env
 
+    - name: Change to Agent Directory
+      run: cd transcript_summarization_agent
+      shell: bash
+
     - name: Deploy Agent
       if: ${{ github.event.inputs.action == 'deploy' }}
       run: |
-        python3 transcript_summarization_agent/deploy_to_agent_engine.py
+        python3 deploy_to_agent_engine.py
 
     - name: List Agents
       if: ${{ github.event.inputs.action == 'list' }}
       run: |
-        python3 transcript_summarization_agent/agent_engine_utils.py list
+        python3 agent_engine_utils.py list
 
     - name: Delete Agent
       if: ${{ github.event.inputs.action == 'delete' && github.event.inputs.resource_name != '' }}
       run: |
-        python3 transcript_summarization_agent/agent_engine_utils.py delete "${{ github.event.inputs.resource_name }}"
+        python3 agent_engine_utils.py delete "${{ github.event.inputs.resource_name }}"
