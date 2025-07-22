@@ -49,12 +49,12 @@ jobs:
 
     - name: Set Google Cloud Project
       run: |
-        echo "GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}" >> .env
-        echo "GOOGLE_CLOUD_LOCATION=${{ env.REGION }}" >> .env
+        echo "GOOGLE_CLOUD_PROJECT=geni-project" >> .env
+        echo "GOOGLE_CLOUD_LOCATION=asia-south1" >> .env
         echo "GOOGLE_GENAI_USE_VERTEXAI=TRUE" >> .env
-        echo "MODEL=${{ env.MODEL }}" >> .env
-        echo "APP_NAME=\"${{ env.APP_NAME }}\"" >> .env
-
+        echo "MODEL=gemini-2.0-flash-exp" >> .env
+        echo "APP_NAME=Transcript Summarizer" >> .env
+        echo "STAGING_BUCKET=gs://geni-project_cloudbuild" >> .env
 
     - name: Deploy Agent
       if: ${{ github.event.inputs.action == 'deploy' }}

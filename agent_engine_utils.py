@@ -8,7 +8,7 @@ load_dotenv()
 vertexai.init(
     project=os.getenv("GOOGLE_CLOUD_PROJECT"),
     location=os.getenv("GOOGLE_CLOUD_LOCATION"),
-    staging_bucket="gs://" + os.getenv("GOOGLE_CLOUD_PROJECT") + "-bucket",
+    staging_bucket=os.getenv("STAGING_BUCKET")
 )
 
 def list():
