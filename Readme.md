@@ -17,7 +17,8 @@ transcript_summarization_agent/
 ├── deploy_to_agent_engine.py          # Deployment script
 ├── test_agent_app_locally.py          # Local test using AdkApp
 ├── query_app_on_agent_engine.py       # Query deployed agent
-└── agent_engine_utils.py              # List/Delete agents
+├── agent_engine_utils.py              # List/Delete agents
+├── cloud_run_adk_api.py               # Cloud Run API to query the agent
 ```
 
 ---
@@ -70,6 +71,38 @@ python3 deploy_to_agent_engine.py
 python3 query_app_on_agent_engine.py
 ```
 
+Alternatively, if you're using Cloud Run to expose your agent API:
+
+### 🌐 Query Agent via Cloud Run
+```bash
+curl -X POST https://<your-cloud-run-url>/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Hi, I want to summarize a transcript.",
+    "userId": "user_001",
+    "sessionId": "session_001"
+  }'
+```
+
+#### Example:
+
+```bash
+curl -X POST https://adk-agent-api-1014227239898.asia-south1.run.app/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Hi, I want to buy a boat",
+    "userId": "u_456",
+    "sessionId": "session_001"
+  }'
+```
+
+Response:
+```json
+{
+  "response": "OK. What kind of boat are you looking for?\n"
+}
+```
+
 ---
 
 ## 🧹 List or Delete Deployed Agents
@@ -93,6 +126,32 @@ This repo can be integrated with GitHub Actions for:
 - Deleting agents
 
 See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
+
+---
+
+## 🧠 Architecture Overview
+
+1. **ADK Agent**: You define your logic using `google.adk` and deploy it using `deploy_to_agent_engine.py`.
+2. **Vertex AI Agent Engine**: Hosts the deployed agent, accessible via Google Cloud's secure APIs.
+3. **Cloud Run API**: Provides an HTTP frontend (`cloud_run_adk_api.py`) that receives user input and communicates with the Vertex agent.
+4. **GitHub Actions**: Automates CI/CD, including build, deploy, and test stages for both the agent and the Cloud Run service.
+
+### 🔁 Flow
+
+```
+[ Client (e.g. Flutter app, Postman) ]
+          |
+          v
+[ Cloud Run HTTP API (cloud_run_adk_api.py) ]
+          |
+          v
+[ Vertex AI Agent Engine ]
+          |
+          v
+[ Gemini Model → Generates Responses ]
+```
+
+This flow decouples frontend clients from backend agent logic, simplifies auth management, and improves scalability.
 
 ---
 
