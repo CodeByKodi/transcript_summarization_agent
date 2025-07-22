@@ -1,23 +1,16 @@
 from flask import Flask, request, jsonify
-from google.oauth2 import service_account
-from google.auth.transport.requests import Request
+import google.auth
 from vertexai import init, agent_engines
 import os
 import json
 
-# === Config ===
 REGION = "asia-south1"
 PROJECT_ID = "geni-project"
 ENGINE_ID = "6280973367809933312"
-SERVICE_ACCOUNT_FILE = "service-account.json"
 APP_NAME = "Transcript Summarizer"  # Replace with your agent name if different
 
 # === Init Vertex AI ===
-credentials = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=["https://www.googleapis.com/auth/cloud-platform"]
-)
-credentials.refresh(Request())
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = SERVICE_ACCOUNT_FILE
+credentials, PROJECT_ID = google.auth.default()
 init(project=PROJECT_ID, location=REGION)
 
 # === Load Agent Engine ===

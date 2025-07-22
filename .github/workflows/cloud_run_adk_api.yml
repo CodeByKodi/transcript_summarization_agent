@@ -30,7 +30,7 @@ jobs:
       uses: google-github-actions/setup-gcloud@v1
       with:
         project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ github.workspace }}/gcp-key.json
+        service_account_key: ${{ github.workspace }}/service-account.json
         export_default_credentials: true
 
     - name: Authenticate Docker to Google Cloud
