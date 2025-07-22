@@ -127,6 +127,24 @@ This repo can be integrated with GitHub Actions for:
 
 See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
+### 📦 ADK GitHub Actions Flow
+
+```mermaid
+graph TD
+  A[Workflow Dispatch Trigger<br>(Action: deploy, list, delete, query, test)] --> B[Checkout Repo]
+  B --> C[Set up Python 3.12]
+  C --> D[Install Dependencies]
+  D --> E[Authenticate with GCP]
+  E --> F[Decode Service Account Key]
+  F --> G[Set GCP Environment Variables]
+
+  G --> H1[Deploy Agent (deploy)]
+  G --> H2[List Agents (list)]
+  G --> H3[Delete Agent (delete)]
+  G --> H4[Query Agent (query)]
+  G --> H5[Test Agent Locally (test)]
+```
+
 ---
 
 ## 🧠 Architecture Overview
@@ -140,9 +158,9 @@ See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
 ```mermaid
 graph TD
-    A[Client<br>(Flutter app / Postman)] --> B[Cloud Run API<br>(cloud_run_adk_api.py)]
+    A[Client\n(Flutter app / Postman)] --> B[Cloud Run API\n(cloud_run_adk_api.py)]
     B --> C[Vertex AI Agent Engine]
-    C --> D[Gemini Model<br>Generates Response]
+    C --> D[Gemini Model\nGenerates Response]
 ```
 
 ---
