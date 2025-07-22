@@ -51,10 +51,20 @@ def validate_gcs_access():
 
 validate_gcs_access()
 
+# Additional check for bucket accessibility using HEAD request
+try:
+    bucket = gcs_client.get_bucket(bucket_name)
+    test_blob = bucket.blob("permission_probe.txt")
+    test_blob.upload_from_string("validate permissions")
+    test_blob.delete()
+    print("✅ Verified: Service account has upload/delete permissions on the bucket.")
+except Exception as e:
+    print(f"❌ Additional GCS write test failed: {e}")
+    exit(1)
+
 try:
     # Confirm bucket exists
-    gcs_client = storage.Client(credentials=credentials)
-    bucket_name = "geni-project_cloudbuild"
+    # (gcs_client and bucket_name already defined above)
     if not gcs_client.lookup_bucket(bucket_name):
         raise Exception(f"❌ Bucket '{bucket_name}' not found or not accessible by the service account.")
 
