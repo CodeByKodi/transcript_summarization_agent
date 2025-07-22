@@ -32,8 +32,16 @@ def validate_gcs_access():
 
     try:
         bucket = client.bucket(bucket_name)
+
+        # Check IAM permission for write access
+        permissions = bucket.test_iam_permissions(["storage.objects.create"])
+        if "storage.objects.create" not in permissions:
+            raise PermissionError(f"❌ Service account does not have 'storage.objects.create' permission on bucket {bucket_name}")
+
+        # Proceed with test upload
         blob = bucket.blob(test_blob_name)
-        blob.upload_from_string("This is a test file to verify GCS permissions.")
+        with blob.open("w") as f:
+            f.write("This is a test file to verify GCS permissions.")
         print(f"✅ Successfully uploaded test file to {bucket_name}")
         blob.delete()
         print(f"🧹 Test file cleaned up")
