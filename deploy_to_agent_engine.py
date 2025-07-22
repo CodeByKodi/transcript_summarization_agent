@@ -6,6 +6,7 @@ from agent import root_agent
 from google.oauth2 import service_account
 
 load_dotenv()
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service-account.json"
 
 credentials = service_account.Credentials.from_service_account_file(
     "service-account.json"
