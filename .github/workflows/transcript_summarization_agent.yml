@@ -47,6 +47,9 @@ jobs:
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+    - name: Decode GCP Service Account Key
+      run: echo "${{ secrets.GCP_SA_KEY }}" | base64 -d > service-account.json
+
     - name: Set Google Cloud Project
       run: |
         echo "GOOGLE_CLOUD_PROJECT=geni-project" >> .env
