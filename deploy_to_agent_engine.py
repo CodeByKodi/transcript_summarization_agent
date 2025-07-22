@@ -6,28 +6,29 @@ from agent import root_agent
 from google.oauth2 import service_account
 
 load_dotenv()
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "service-account.json"
+sa_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "service-account.json")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = sa_path
+credentials = service_account.Credentials.from_service_account_file(sa_path)
 
-credentials = service_account.Credentials.from_service_account_file(
-    "service-account.json"
-)
+bucket_uri = os.getenv("STAGING_BUCKET", "gs://geni-project_cloudbuild")
+bucket_name = bucket_uri.replace("gs://", "")
+from google.cloud import storage
+gcs_client = storage.Client(credentials=credentials)
 
 vertexai.init(
     project=os.getenv("GOOGLE_CLOUD_PROJECT"),
     location=os.getenv("GOOGLE_CLOUD_LOCATION"),
-    staging_bucket="gs://geni-project_cloudbuild",
+    staging_bucket=bucket_uri,
     credentials=credentials,
 )
 
 print(f"Using service account: {credentials.service_account_email}")
 
-from google.cloud import storage
 from google.cloud.exceptions import Forbidden
 
 # ✅ Optional: test GCS access before deploying agent
 def validate_gcs_access():
     client = storage.Client(credentials=credentials)
-    bucket_name = "geni-project_cloudbuild"
     test_blob_name = "adk-upload-test.txt"
 
     try:
@@ -53,7 +54,7 @@ validate_gcs_access()
 
 # Additional check for bucket accessibility using HEAD request
 try:
-    bucket = gcs_client.get_bucket(bucket_name)
+    bucket = gcs_client.bucket(bucket_name)
     test_blob = bucket.blob("permission_probe.txt")
     test_blob.upload_from_string("validate permissions")
     test_blob.delete()
@@ -65,7 +66,7 @@ except Exception as e:
 try:
     # Confirm bucket exists
     # (gcs_client and bucket_name already defined above)
-    if not gcs_client.lookup_bucket(bucket_name):
+    if not gcs_client.bucket(bucket_name).exists():
         raise Exception(f"❌ Bucket '{bucket_name}' not found or not accessible by the service account.")
 
     # Proceed with deployment
