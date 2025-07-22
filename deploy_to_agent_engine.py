@@ -50,7 +50,8 @@ def validate_gcs_access():
         print(f"❌ Failed GCS access check: {e}")
         exit(1)
 
-validate_gcs_access()
+if os.getenv("VALIDATE_GCS", "false").lower() == "true":
+    validate_gcs_access()
 
 # Additional check for bucket accessibility using HEAD request
 try:
