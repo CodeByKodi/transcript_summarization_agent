@@ -131,7 +131,7 @@ See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
 ```mermaid
 graph TD
-  A[Workflow Dispatch Trigger<br>(Action: deploy, list, delete, query, test)] --> B[Checkout Repo]
+  A[Workflow Dispatch Trigger\n(Action: deploy, list, delete, query, test)] --> B[Checkout Repo]
   B --> C[Set up Python 3.12]
   C --> D[Install Dependencies]
   D --> E[Authenticate with GCP]
