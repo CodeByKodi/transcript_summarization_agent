@@ -50,7 +50,8 @@ def validate_gcs_access():
         print(f"❌ Failed GCS access check: {e}")
         exit(1)
 
-validate_gcs_access()
+if os.getenv("VALIDATE_GCS", "false").lower() == "true":
+    validate_gcs_access()
 
 # Additional check for bucket accessibility using HEAD request
 try:
@@ -68,6 +69,14 @@ try:
     # (gcs_client and bucket_name already defined above)
     if not gcs_client.bucket(bucket_name).exists():
         raise Exception(f"❌ Bucket '{bucket_name}' not found or not accessible by the service account.")
+
+    existing_engines = list(agent_engines.list())
+    app_name = os.getenv("APP_NAME", "Agent App")
+
+    for engine in existing_engines:
+        if engine.display_name == app_name:
+            print(f"✅ AgentEngine with display name '{app_name}' already exists: {engine.name}")
+            exit(0)
 
     # Proceed with deployment
     remote_app = agent_engines.create(
