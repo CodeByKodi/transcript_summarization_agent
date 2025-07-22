@@ -4,7 +4,7 @@ from google.adk import Agent
 root_agent = Agent(
     name="transcript_summarization_agent",
     description="Summarizes chat transcripts.",
-    model=os.getenv("MODEL", "gemini-2.0-flash-exp"),
+    model="gemini-1.5-pro",
     instruction="Summarize the provided chat transcript."
 )
 
