@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: 'Choose action: deploy, list, delete'
+        description: 'Choose action: deploy, list, delete, query, test'
         required: true
         default: 'deploy'
         type: choice
@@ -12,6 +12,8 @@ on:
           - deploy
           - list
           - delete
+          - query
+          - test
       resource_name:
         description: 'Full resource name (only required for delete)'
         required: false
@@ -75,3 +77,13 @@ jobs:
       if: ${{ github.event.inputs.action == 'delete' && github.event.inputs.resource_name != '' }}
       run: |
         python3 agent_engine_utils.py delete "${{ github.event.inputs.resource_name }}"
+
+    - name: Query Agent
+      if: ${{ github.event.inputs.action == 'query' }}
+      run: |
+        python3 query_app_on_agent_engine.py
+
+    - name: Test Agent Locally
+      if: ${{ github.event.inputs.action == 'test' }}
+      run: |
+        python3 test_agent_app_locally.py
