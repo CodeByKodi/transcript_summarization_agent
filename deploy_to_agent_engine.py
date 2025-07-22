@@ -22,6 +22,7 @@ vertexai.init(
 print(f"Using service account: {credentials.service_account_email}")
 
 from google.cloud import storage
+from google.cloud.exceptions import Forbidden
 
 # ✅ Optional: test GCS access before deploying agent
 def validate_gcs_access():
@@ -42,11 +43,25 @@ def validate_gcs_access():
 
 validate_gcs_access()
 
-remote_app = agent_engines.create(
-    display_name=os.getenv("APP_NAME", "Agent App"),
-    agent_engine=root_agent,
-    requirements=[
-        "google-cloud-aiplatform[adk,agent_engines]",
-        "cloudpickle==3.1.1"
-    ]
-)
+try:
+    # Confirm bucket exists
+    gcs_client = storage.Client(credentials=credentials)
+    bucket_name = "geni-project_cloudbuild"
+    if not gcs_client.lookup_bucket(bucket_name):
+        raise Exception(f"❌ Bucket '{bucket_name}' not found or not accessible by the service account.")
+
+    # Proceed with deployment
+    remote_app = agent_engines.create(
+        display_name=os.getenv("APP_NAME", "Agent App"),
+        agent_engine=root_agent,
+        requirements=[
+            "google-cloud-aiplatform[adk,agent_engines]",
+            "cloudpickle==3.1.1"
+        ]
+    )
+except Forbidden as e:
+    print(f"❌ GCS write permission denied: {e}")
+    exit(1)
+except Exception as e:
+    print(f"❌ Failed to deploy agent engine: {e}")
+    exit(1)
