@@ -19,6 +19,8 @@ vertexai.init(
     credentials=credentials,
 )
 
+print(f"Using service account: {credentials.service_account_email}")
+
 from google.cloud import storage
 
 # ✅ Optional: test GCS access before deploying agent
