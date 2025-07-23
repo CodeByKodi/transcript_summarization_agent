@@ -6,7 +6,7 @@ import json
 
 REGION = "asia-south1"
 PROJECT_ID = "geni-project"
-ENGINE_ID = "6280973367809933312"
+ENGINE_ID = "7284150184806711296"
 APP_NAME = "Transcript Summarizer"  # Replace with your agent name if different
 
 # === Init Vertex AI ===
