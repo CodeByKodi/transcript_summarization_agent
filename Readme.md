@@ -40,7 +40,7 @@ Update `.env` with your values:
 GOOGLE_GENAI_USE_VERTEXAI=TRUE
 GOOGLE_CLOUD_PROJECT=<your-gcp-project-id>
 GOOGLE_CLOUD_LOCATION=us-central1
-MODEL=gemini-2.0-flash-exp
+MODEL=gemini-2.0-flash-exp  # Options include gemini-2.0-flash-exp, gemini-2.0-pro, etc.
 APP_NAME="Transcript Summarizer"
 ```
 
@@ -56,6 +56,7 @@ gcloud config set project <your-gcp-project-id>
 ```bash
 python3 test_agent_app_locally.py
 ```
+*Note: You should see summarized responses printed in the console, indicating the agent is working as expected.*
 
 ---
 
@@ -83,6 +84,7 @@ curl -X POST https://<your-cloud-run-url>/query \
     "sessionId": "session_001"
   }'
 ```
+*Note: For private Cloud Run endpoints, ensure you include appropriate authentication tokens (e.g., Identity Token) in the request headers.*
 
 #### Example:
 
@@ -119,6 +121,27 @@ python3 agent_engine_utils.py delete <RESOURCE_NAME>
 
 ---
 
+## 📦 Sample requirements.txt
+
+```
+google-adk==0.1.0
+google-cloud-aiplatform
+python-dotenv
+requests
+```
+
+---
+
+## 💡 Tips
+
+- To activate the virtual environment: `source venv/bin/activate`
+- To install dependencies: `pip install -r requirements.txt`
+- To run the local test: `python3 test_agent_app_locally.py`
+- To deploy the agent: `python3 deploy_to_agent_engine.py`
+- To query the deployed agent: `python3 query_app_on_agent_engine.py`
+
+---
+
 ## ✅ GitHub Actions CI/CD Support
 This repo can be integrated with GitHub Actions for:
 - Deploying the agent
@@ -131,18 +154,18 @@ See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
 ```mermaid
 graph TD
-  A[Workflow Dispatch Trigger\n(Action: deploy, list, delete, query, test)] --> B[Checkout Repo]
+  A[Workflow Dispatch Trigger deploy, list, delete, query, test] --> B[Checkout Repo]
   B --> C[Set up Python 3.12]
   C --> D[Install Dependencies]
   D --> E[Authenticate with GCP]
   E --> F[Decode Service Account Key]
   F --> G[Set GCP Environment Variables]
 
-  G --> H1[Deploy Agent (deploy)]
-  G --> H2[List Agents (list)]
-  G --> H3[Delete Agent (delete)]
-  G --> H4[Query Agent (query)]
-  G --> H5[Test Agent Locally (test)]
+  G --> H1[Deploy Agent deploy]
+  G --> H2[List Agents list]
+  G --> H3[Delete Agent delete]
+  G --> H4[Query Agent query]
+  G --> H5[Test Agent Locally test]
 ```
 
 ---
@@ -157,10 +180,10 @@ graph TD
 ### 🔁 Flow
 
 ```mermaid
-graph TD
-    A[Client\n(Flutter app / Postman)] --> B[Cloud Run API\n(cloud_run_adk_api.py)]
+flowchart TD
+    A[Client: Flutter app or Postman] --> B[Cloud Run API - cloud_run_adk_api.py]
     B --> C[Vertex AI Agent Engine]
-    C --> D[Gemini Model\nGenerates Response]
+    C --> D[Gemini Pro and Gemini Flash via Vertex AI]
 ```
 
 ---
