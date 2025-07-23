@@ -183,7 +183,7 @@ graph TD
 flowchart TD
     A[Client: Flutter app or Postman] --> B[Cloud Run API - cloud_run_adk_api.py]
     B --> C[Vertex AI Agent Engine]
-    C --> D[Gemini Pro / Gemini Flash (via Vertex AI)]
+    C --> D[Gemini Pro and Gemini Flash via Vertex AI]
 ```
 
 ---
