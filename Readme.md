@@ -127,6 +127,24 @@ This repo can be integrated with GitHub Actions for:
 
 See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
+### 📦 ADK GitHub Actions Flow
+
+```mermaid
+graph TD
+  A[Workflow Dispatch Trigger\n(Action: deploy, list, delete, query, test)] --> B[Checkout Repo]
+  B --> C[Set up Python 3.12]
+  C --> D[Install Dependencies]
+  D --> E[Authenticate with GCP]
+  E --> F[Decode Service Account Key]
+  F --> G[Set GCP Environment Variables]
+
+  G --> H1[Deploy Agent (deploy)]
+  G --> H2[List Agents (list)]
+  G --> H3[Delete Agent (delete)]
+  G --> H4[Query Agent (query)]
+  G --> H5[Test Agent Locally (test)]
+```
+
 ---
 
 ## 🧠 Architecture Overview
@@ -138,20 +156,28 @@ See `.github/workflows/adk-agent-engine.yml` for workflow configuration.
 
 ### 🔁 Flow
 
-```
-[ Client (e.g. Flutter app, Postman) ]
-          |
-          v
-[ Cloud Run HTTP API (cloud_run_adk_api.py) ]
-          |
-          v
-[ Vertex AI Agent Engine ]
-          |
-          v
-[ Gemini Model → Generates Responses ]
+```mermaid
+graph TD
+    A[Client\n(Flutter app / Postman)] --> B[Cloud Run API\n(cloud_run_adk_api.py)]
+    B --> C[Vertex AI Agent Engine]
+    C --> D[Gemini Model\nGenerates Response]
 ```
 
-This flow decouples frontend clients from backend agent logic, simplifies auth management, and improves scalability.
+---
+
+### 🧩 GitHub Actions Workflow
+
+```mermaid
+graph TD
+    A[GitHub Push to main / Manual Trigger] --> B[Checkout Code]
+    B --> C[Decode Service Account Key]
+    C --> D[Activate Service Account]
+    D --> E[Set Up Google Cloud SDK]
+    E --> F[Authenticate Docker]
+    F --> G[Build & Push Container to Artifact Registry]
+    G --> H[Deploy to Cloud Run]
+    H --> I[Public Cloud Run URL Available]
+```
 
 ---
 
